@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:ex012/pages/walletPage.dart';
+import 'package:AppBanco/pages/walletPage.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -83,13 +83,21 @@ class _HomePageState extends State<HomePage> {
       appBar: AppBar(
         backgroundColor: Colors.white,
         elevation: 0.55,
-        title: Text(
-          'Nubank',
-          style: GoogleFonts.rubikMonoOne(
+        title: Row(
+          children: [
+            Text("Nubank",  style: GoogleFonts.rubikMonoOne(
             fontSize: 20,
             fontWeight: FontWeight.bold,
             color: Colors.black,
-          ),
+          ),), Spacer(),
+          IconButton(
+            onPressed: null,
+            icon: const Icon(
+              Icons.search,
+              color: Colors.black,
+            ),
+          ), Spacer(),
+          ],
         ),
         actions: [
           IconButton(
