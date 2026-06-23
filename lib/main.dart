@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:app_banco/home_page.dart';
+import './database/base.dart';
+import 'package:app_banco/pages/loginPage.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 void main() {
+  print(FakeDatabase.contas.length);
   runApp(const MyApp());
 }
 
@@ -22,7 +24,7 @@ class MyApp extends StatelessWidget {
         useMaterial3: true,
       ),
 
-      home: const HomePage(),
+      home: const LoginPage(),
     );
   }
 }

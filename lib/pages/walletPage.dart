@@ -1,10 +1,28 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
+import 'package:app_banco/services/auth_service.dart';
+import 'package:app_banco/database/base.dart';
+
+import 'package:app_banco/models/utilizador.dart';
+import 'package:app_banco/models/conta.dart';
 
 class WalletPage extends StatelessWidget {
   const WalletPage({super.key});
 
+  // 🔴 OBTER DADOS DO UTILIZADOR LOGADO
+  Utilizador get user => AuthService.utilizadorAtual!;
+
+  // 🔴 OBTER CONTAS DO UTILIZADOR
+  List<Conta> get minhasContas =>
+      FakeDatabase.contas.where((c) => c.id_utilizador == user.id).toList();
+
   @override
   Widget build(BuildContext context) {
+    final NumberFormat euroFormat = NumberFormat.currency(
+      locale: 'pt_PT',
+      symbol: '€',
+    );
+
     return SingleChildScrollView(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
       child: Column(
@@ -16,7 +34,7 @@ class WalletPage extends StatelessWidget {
           const SizedBox(height: 24),
           _sectionLabel('Saldo por conta'),
           const SizedBox(height: 10),
-          _saldoPorConta(),
+          _saldoPorConta(euroFormat),
           const SizedBox(height: 24),
           _sectionLabel('Investimentos & Poupanças'),
           const SizedBox(height: 10),
@@ -50,7 +68,7 @@ class WalletPage extends StatelessWidget {
           _cartaoItem(
             tipo: 'Débito',
             numero: '•••• •••• •••• 4821',
-            titular: 'Leonardo Santos',
+            titular: user.nome,
             validade: '05/28',
             cor: const Color(0xFF6C3FC5),
           ),
@@ -58,7 +76,7 @@ class WalletPage extends StatelessWidget {
           _cartaoItem(
             tipo: 'Crédito',
             numero: '•••• •••• •••• 7340',
-            titular: 'Vinicius Mendes',
+            titular: user.nome,
             validade: '11/27',
             cor: const Color(0xFF3C2D8C),
           ),
@@ -129,7 +147,7 @@ class WalletPage extends StatelessWidget {
   }
 
   Widget _adicionarCartaoButton() {
-    return Container( 
+    return Container(
       width: 100,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(16),
@@ -154,9 +172,25 @@ class WalletPage extends StatelessWidget {
     );
   }
 
-  // ── SALDO POR CONTA ───────────────────────────────────────────────────────
+  // ── SALDO POR CONTA (DADOS REAIS) ───────────────────────────────────────
 
-  Widget _saldoPorConta() {
+  Widget _saldoPorConta(NumberFormat euroFormat) {
+    // 🔴 MOSTRAR CONTAS REAIS DO UTILIZADOR
+    if (minhasContas.isEmpty) {
+      return Container(
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(color: Colors.grey.shade200),
+        ),
+        padding: const EdgeInsets.all(16),
+        child: const Text(
+          "Nenhuma conta criada",
+          style: TextStyle(color: Colors.grey),
+        ),
+      );
+    }
+
     return Container(
       decoration: BoxDecoration(
         color: Colors.white,
@@ -165,24 +199,26 @@ class WalletPage extends StatelessWidget {
       ),
       child: Column(
         children: [
-          _contaItem(
-            icone: Icons.wallet_outlined,
-            titulo: 'Conta à ordem',
-            subtitulo: 'Nubank Principal',
-            valor: '€ 1.250,00',
-            detalhe: 'disponível',
-            valorCor: Colors.black87,
-            showDivider: true,
-          ),
-          _contaItem(
-            icone: Icons.credit_card_outlined,
-            titulo: 'Cartão de crédito',
-            subtitulo: 'Fatura a 12 jul',
-            valor: '- € 340,50',
-            detalhe: 'utilizado',
-            valorCor: const Color(0xFFA32D2D),
-            showDivider: false,
-          ),
+          // 🔴 LISTAR CONTAS REAIS
+          ...minhasContas.asMap().entries.map((entry) {
+            int index = entry.key;
+            Conta conta = entry.value;
+            bool showDivider = index < minhasContas.length - 1;
+
+            return Column(
+              children: [
+                _contaItem(
+                  icone: Icons.wallet_outlined,
+                  titulo: conta.nome,
+                  subtitulo: conta.tipo,
+                  valor: euroFormat.format(conta.saldo),
+                  detalhe: 'disponível',
+                  valorCor: Colors.black87,
+                  showDivider: showDivider,
+                ),
+              ],
+            );
+          }),
         ],
       ),
     );
@@ -354,3 +390,4 @@ class WalletPage extends StatelessWidget {
   }
 }
 
+// 🔴 IMPORTAR TIPOS

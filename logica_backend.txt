@@ -1,0 +1,32 @@
+
+# Entidades do sistema
+
+
+utilizador:
+ - id PK (Primary Key)
+ - nome
+ - email
+
+conta:
+ - id PK (Primary Key)
+ - nome
+ - saldo
+ - tipo
+ - id_utilizador FK (Foreign Key)
+
+cartão:
+ - id PK (Primary Key)
+ - validade
+ - tipo (crédito/débito)
+ - limite(se crédito)
+ - titular
+ - número_mascarado
+ - id_conta FK (Foreign Key)
+
+transações: 
+ - id PK (Primary Key)
+ - valor
+ - data
+ - tipo (entrada/saída)
+ - descrição
+ - id_conta FK (Foreign Key)
