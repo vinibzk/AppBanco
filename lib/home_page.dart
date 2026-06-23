@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:AppBanco/pages/walletPage.dart';
+import 'package:app_banco/pages/walletPage.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
